@@ -1,9 +1,12 @@
 from flask import Flask, jsonify
 from sqlalchemy import text
+
 from extensions import db, cors, jwt, mail, migrate
+
 from routes.auth import auth_bp
 from routes.resume_routes import resume_bp
 from routes.analytics_routes import analytics_bp
+
 import models
 
 from config.settings import (
@@ -22,6 +25,7 @@ from config.settings import (
     MAIL_FROM,
 )
 
+
 def create_app():
     app = Flask(__name__)
 
@@ -36,6 +40,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = (
         SQLALCHEMY_TRACK_MODIFICATIONS
     )
+
     app.config["MAIL_SERVER"] = MAIL_SERVER
     app.config["MAIL_PORT"] = MAIL_PORT
     app.config["MAIL_USERNAME"] = MAIL_USERNAME
@@ -43,8 +48,6 @@ def create_app():
     app.config["MAIL_USE_TLS"] = MAIL_USE_TLS
     app.config["MAIL_DEFAULT_SENDER"] = MAIL_FROM
 
-    mail.init_app(app)
-    
     # ---------------------------------------------
     # Initialize Extensions
     # ---------------------------------------------
@@ -52,20 +55,56 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    mail.init_app(app)
+
+    # ---------------------------------------------
+    # Configure CORS
+    # ---------------------------------------------
+
+    allowed_origins = [
+        "https://resume-analyzer-kiacpuxbz-vgti.vercel.app",
+        "https://resume-analyzer-pro-five.vercel.app",
+        "http://localhost:5173",
+    ]
+
+    # Include the frontend URL configured on Render.
+    if FRONTEND_URL:
+        configured_origin = FRONTEND_URL.rstrip("/")
+
+        if configured_origin not in allowed_origins:
+            allowed_origins.append(configured_origin)
+
     cors.init_app(
         app,
         resources={
             r"/api/*": {
-                "origins": FRONTEND_URL
+                "origins": allowed_origins,
+                "methods": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE",
+                    "OPTIONS",
+                ],
+                "allow_headers": [
+                    "Content-Type",
+                    "Authorization",
+                ],
             }
         },
     )
+
+    # ---------------------------------------------
+    # Register Blueprints
+    # ---------------------------------------------
+
     app.register_blueprint(auth_bp)
     app.register_blueprint(resume_bp)
     app.register_blueprint(analytics_bp)
-    
+
     # ---------------------------------------------
-    # Create Database Tables
+    # Create Missing Database Tables
     # ---------------------------------------------
 
     with app.app_context():
@@ -81,7 +120,7 @@ def create_app():
             "status": "success",
             "message": f"{APP_NAME} API is running",
             "version": APP_VERSION,
-        })
+        }), 200
 
     # ---------------------------------------------
     # Database Connection Test
@@ -98,13 +137,18 @@ def create_app():
                 "status": "success",
                 "message": "PostgreSQL connection successful",
                 "result": result,
-            })
+            }), 200
 
-        except Exception as e:
+        except Exception:
+            db.session.rollback()
+
+            app.logger.exception(
+                "Database connection test failed."
+            )
+
             return jsonify({
                 "status": "error",
-                "message": "PostgreSQL connection failed",
-                "error": str(e),
+                "message": "PostgreSQL connection failed.",
             }), 500
 
     return app

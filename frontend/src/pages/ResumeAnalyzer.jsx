@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000").replace(/\/$/, "");
+import API_BASE_URL from "../config/api";
 const ANALYZE_ENDPOINT = `${API_BASE_URL}/api/resumes/analyze`;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = [".pdf", ".docx"];

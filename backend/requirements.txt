@@ -11,3 +11,4 @@ reportlab
 Werkzeug
 Flask-JWT-Extended
 Flask-Mail
+gunicorn

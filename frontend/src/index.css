@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@import "tailwindcss";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body {
+  font-family: "Inter", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  width: 100%;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}

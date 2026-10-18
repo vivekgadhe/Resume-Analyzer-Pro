@@ -1,0 +1,13 @@
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-CORS
+python-dotenv
+psycopg[binary]
+PyPDF2
+python-docx
+spacy
+reportlab
+Werkzeug
+Flask-JWT-Extended
+Flask-Mail

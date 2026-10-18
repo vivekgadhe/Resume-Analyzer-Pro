@@ -1,0 +1,126 @@
+﻿ResumeAI-Pro/
+│
+├── README.md                         # Main project documentation displayed on GitHub
+├── folder_structure.txt              # Documents the project's folder organization
+├── .gitignore                        # Prevents secrets, dependencies, and private files from being committed
+├── LICENSE                           # Project license; add after choosing an appropriate license
+│
+├── .github/                          # GitHub-specific configuration
+│   ├── workflows/                    # Automated CI/CD workflows
+│   │   └── tests.yml                 # Recommended: run automated tests on GitHub
+│   │
+│   └── ISSUE_TEMPLATE/               # Recommended: templates for reporting bugs and requesting features
+│
+├── backend/                          # Python Flask REST API and backend logic
+│   │
+│   ├── config/                       # Application configuration
+│   │   ├── __init__.py               # Makes config importable as a Python package
+│   │   └── settings.py               # Application settings, environment variables, and configuration
+│   │
+│   ├── migrations/                  # Database schema migration history
+│   │   ├── versions/                 # Individual database migration scripts
+│   │   │   └── 3f61b6a342e1_allow_anonymous_resume_uploads.py
+│   │   │                              # Existing migration; retain if it belongs to your database history
+│   │   ├── alembic.ini               # Alembic migration configuration
+│   │   ├── env.py                    # Connects migration operations to application/database configuration
+│   │   ├── README                    # Migration instructions
+│   │   └── script.py.mako            # Template used to generate migration scripts
+│   │
+│   ├── models/                       # SQLAlchemy database models
+│   │   ├── __init__.py               # Model package initialization
+│   │   ├── user.py                   # User account model
+│   │   ├── resume.py                 # Resume records and associated metadata
+│   │   ├── resume_analysis.py        # Resume analysis results and related data
+│   │   └── email_otp.py              # Email OTP records for verification
+│   │
+│   ├── routes/                       # API endpoints and request handling
+│   │   ├── __init__.py               # Route package initialization
+│   │   ├── auth.py                   # Registration, login, and authentication endpoints
+│   │   ├── resume_routes.py          # Resume upload, analysis, and retrieval endpoints
+│   │   └── analytics_routes.py       # Analytics and reporting endpoints
+│   │
+│   ├── services/                     # Business logic separated from API routes
+│   │   ├── __init__.py               # Service package initialization
+│   │   ├── analysis_service.py        # Resume scoring, skill analysis, and job matching logic
+│   │   ├── auth_service.py           # Authentication-related business logic
+│   │   ├── email_service.py          # Email delivery functionality
+│   │   ├── file_service.py           # File validation, storage, and file operations
+│   │   ├── otp_service.py            # OTP generation and verification logic
+│   │   ├── parser_service.py         # Extracts text from supported resume documents
+│   │   ├── password_service.py       # Password hashing and verification
+│   │   └── resume_service.py         # Resume-related business logic
+│   │
+│   ├── uploads/                      # Runtime storage for uploaded resumes
+│   │   └── resumes/                  # Uploaded PDF/DOCX files
+│   │                                  # DO NOT publish real user resumes to GitHub
+│   │
+│   ├── tests/                        # Recommended: backend unit and integration tests
+│   │   ├── __init__.py               # Optional test package initialization
+│   │   ├── test_auth.py              # Recommended: authentication tests
+│   │   ├── test_resume.py            # Recommended: resume API and processing tests
+│   │   └── test_analytics.py         # Recommended: analytics API tests
+│   │
+│   ├── app.py                        # Flask application entry point and API registration
+│   ├── extensions.py                 # Shared Flask extensions such as database, JWT, and migrations
+│   ├── requirements.txt              # Python dependencies; create if missing
+│   ├── .env.example                  # Example environment variable names without real secrets
+│   ├── .gitignore                    # Optional backend-specific Git ignore rules
+│   └── package.json                  # Existing file; retain only if backend tooling requires Node.js
+│
+├── frontend/                         # React and Vite frontend application
+│   │
+│   ├── public/                       # Static assets served directly by Vite
+│   │   ├── dashboard-preview.png     # Dashboard preview image
+│   │   ├── favicon.svg               # Browser tab icon
+│   │   ├── icons.svg                 # Shared SVG icons
+│   │   ├── profile-photo.png         # Profile image; confirm you have permission to publish it
+│   │   └── resume-analyzer-pro-logo.png
+│   │                                  # Application logo
+│   │
+│   ├── src/                          # Main frontend source code
+│   │   │
+│   │   ├── assets/                   # Images and other imported frontend assets
+│   │   │   ├── hero.png              # Homepage hero image
+│   │   │   ├── react.svg             # React asset
+│   │   │   └── vite.svg              # Vite asset
+│   │   │
+│   │   ├── components/               # Reusable UI components
+│   │   │   ├── Footer.jsx            # Shared footer component
+│   │   │   └── navbar.jsx            # Navigation bar and navigation links
+│   │   │
+│   │   ├── config/                   # Frontend configuration and static content
+│   │   │   ├── homeData.js           # Homepage content and data
+│   │   │   └── siteConfig.js         # Shared site settings and navigation configuration
+│   │   │
+│   │   ├── pages/                    # Page-level React components
+│   │   │   ├── Home.jsx              # Landing page
+│   │   │   ├── ResumeAnalyzer.jsx    # Resume upload and analysis interface
+│   │   │   ├── Analytics.jsx         # Resume analytics dashboard
+│   │   │   ├── Candidates.jsx        # Candidate list and candidate details
+│   │   │   ├── About.jsx             # About the application
+│   │   │   ├── SignIn.jsx            # User login page
+│   │   │   ├── Register.jsx          # User registration page
+│   │   │   └── ForgotPassword.jsx    # Password recovery page
+│   │   │
+│   │   ├── App.jsx                   # Application component and route definitions
+│   │   ├── App.css                   # Application-specific styles
+│   │   ├── index.css                 # Global styles and Tailwind CSS imports
+│   │   └── main.jsx                  # React entry point
+│   │
+│   ├── .gitignore                    # Frontend-specific ignore rules, if needed
+│   ├── eslint.config.js              # JavaScript and JSX linting configuration
+│   ├── index.html                    # HTML entry point used by Vite
+│   ├── package.json                  # Frontend dependencies and npm scripts
+│   ├── package-lock.json             # Exact npm dependency lockfile; commit this if using npm
+│   ├── vite.config.js                # Vite development server and build configuration
+│   └── README.md                     # Optional frontend-specific documentation
+│
+├── docs/                             # Recommended: additional project documentation
+│   ├── architecture.md               # System architecture and component relationships
+│   ├── api-documentation.md           # API endpoints, requests, and responses
+│   └── setup-guide.md                # Detailed local installation instructions
+│
+└── screenshots/                      # Optional screenshots for the GitHub README
+    ├── home.png                      # Homepage screenshot
+    ├── resume-analysis.png            # Resume analysis screenshot
+    └── analytics-dashboard.png        # Analytics dashboard screenshot

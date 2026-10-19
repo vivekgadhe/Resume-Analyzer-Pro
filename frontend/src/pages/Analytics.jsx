@@ -14,13 +14,13 @@ import {
 } from "chart.js";
 import { Bar, Doughnut, Line, Radar } from "react-chartjs-2";
 import { Link } from "react-router-dom";
+import API_BASE_URL from "../config/api";
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement, BarElement,
   ArcElement, RadialLinearScale, Filler, Tooltip, Legend
 );
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000").replace(/\/$/, "");
 const PERIODS = [
   { value: "7", label: "Last 7 days" },
   { value: "30", label: "Last 30 days" },
@@ -198,7 +198,7 @@ export default function Analytics() {
     setError("");
     try {
       // Build analytics from the same saved resume records used by the Candidates page.
-      const response = await fetch(`${API_BASE}/api/resumes`, {
+      const response = await fetch(`${API_BASE_URL}/api/resumes`, {
         headers: { Accept: "application/json" },
       });
       const json = await response.json().catch(() => ({}));
@@ -346,7 +346,11 @@ export default function Analytics() {
           };
         });
 
-      const averageProcessingValues = records.map((resume) => Number(getAnalysis(resume).processing_time)).filter(Number.isFinite).filter((value) => value > 0);
+      const averageProcessingValues = records
+        .map((resume) => getAnalysis(resume).processing_time)
+        .filter((value) => value !== null && value !== undefined && value !== "")
+        .map(Number)
+        .filter((value) => Number.isFinite(value) && value > 0);
       setLiveData({
         totalAnalyses: records.filter((resume) => Object.keys(getAnalysis(resume)).length > 0).length,
         averageScore: Math.round(avg(scored.map(scoreOf))),
@@ -366,7 +370,11 @@ export default function Analytics() {
       });
       setLastUpdated(new Date());
     } catch (err) {
-      setError(err.message || "Unable to load live analytics.");
+      setError(
+        err instanceof TypeError
+          ? "Could not connect to the API. Check the backend URL and network/CORS settings."
+          : (err.message || "Unable to load live analytics.")
+      );
     } finally {
       setIsRefreshing(false);
     }
